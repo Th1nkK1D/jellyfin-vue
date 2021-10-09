@@ -56,6 +56,7 @@
       class="pt-s pl-2 pr-2 app-bar-safe-zone"
       flat
       app
+      :extension-height="isSecondToolbarActive ? 48 : 0"
       :class="{ opaque: opaqueAppBar || $vuetify.breakpoint.xsOnly }"
     >
       <v-app-bar-nav-icon
@@ -101,6 +102,13 @@
       <cast-button
         :fab="!(opaqueAppBar || $vuetify.breakpoint.xsOnly) && !isScrolled"
       />
+      <template #extension>
+        <portal-target
+          name="second-upper-toolbar"
+          class="max-width"
+          @change="isSecondToolbarActive = $event"
+        />
+      </template>
     </v-app-bar>
     <v-main>
       <div class="pa-s">
@@ -145,6 +153,7 @@ export default Vue.extend({
   data() {
     return {
       isScrolled: false,
+      isSecondToolbarActive: false,
       drawer: false
     };
   },
@@ -238,12 +247,17 @@ export default Vue.extend({
 <style lang="scss" scoped>
 @import '~vuetify/src/styles/styles.sass';
 .app-bar-safe-zone {
-  height: calc(56px + env(safe-area-inset-top)) !important;
+  // 56px + 48px
+  // 48px is the height of the second app toolbar
+  height: calc(104px + env(safe-area-inset-top)) !important;
 }
 
 @media #{map-get($display-breakpoints, 'md-and-up')} {
   .app-bar-safe-zone {
-    height: calc(64px + env(safe-area-inset-top)) !important;
+    // 64 + 48px
+    // 48px is the height of the second app toolbar
+    // 64px is the height of the main app toolbar
+    height: calc(112px + env(safe-area-inset-top)) !important;
   }
 }
 
@@ -265,5 +279,9 @@ export default Vue.extend({
 .search-input.expandable.primary--text {
   max-width: 40em;
   transition: max-width 0.25s;
+}
+
+.max-width {
+  width: 100% !important;
 }
 </style>

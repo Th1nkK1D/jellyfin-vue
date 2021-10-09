@@ -1,42 +1,51 @@
 <template>
   <div>
-    <v-app-bar dense flat>
-      <span class="text-h6 hidden-sm-and-down">
-        {{ collectionInfo.Name }}
-      </span>
-      <v-chip :small="!loading" class="ma-2 hidden-sm-and-down">
-        <template v-if="!loading">{{ itemsCount }}</template>
-        <v-progress-circular v-else width="2" indeterminate size="16" />
-      </v-chip>
-      <v-divider inset vertical class="mx-2 hidden-sm-and-down" />
-      <type-button
-        v-if="hasViewTypes"
-        :type="collectionInfo.CollectionType"
-        :disabled="loading"
-        @change="onChangeType"
-      />
-      <v-divider
-        v-if="isSortable && hasViewTypes"
-        inset
-        vertical
-        class="mx-2"
-      />
-      <sort-button
-        v-if="isSortable"
-        :disabled="loading || !items.length"
-        @change="onChangeSort"
-      />
-      <filter-button
-        v-if="isSortable"
-        :collection-info="collectionInfo"
-        :disabled="loading || (!items.length && !hasFilters)"
-        :items-type="viewType"
-        @change="onChangeFilter"
-      />
-      <v-spacer />
-      <play-button :item="collectionInfo" shuffle />
-      <play-button :item="collectionInfo" />
-    </v-app-bar>
+    <portal v-if="isPageActive" to="second-upper-toolbar">
+      <v-app-bar dense flat>
+        <span class="text-h6 hidden-sm-and-down">
+          {{ collectionInfo.Name }}
+        </span>
+        <v-chip :small="!loading" class="ma-2 hidden-sm-and-down">
+          <template v-if="!loading">{{ itemsCount }}</template>
+          <v-progress-circular v-else width="2" indeterminate size="16" />
+        </v-chip>
+        <v-divider inset vertical class="mx-2 hidden-sm-and-down" />
+        <type-button
+          v-if="hasViewTypes"
+          :type="collectionInfo.CollectionType"
+          :disabled="loading"
+          @change="onChangeType"
+        />
+        <v-divider
+          v-if="isSortable && hasViewTypes"
+          inset
+          vertical
+          class="mx-2"
+        />
+        <sort-button
+          v-if="isSortable"
+          :disabled="loading || !items.length"
+          @change="onChangeSort"
+        />
+        <filter-button
+          v-if="isSortable"
+          :collection-info="collectionInfo"
+          :disabled="loading || (!items.length && !hasFilters)"
+          :items-type="viewType"
+          @change="onChangeFilter"
+        />
+        <v-spacer />
+        <play-button
+          :item="collectionInfo"
+          shuffle
+          :icon-only="$vuetify.breakpoint.smAndDown"
+        />
+        <play-button
+          :item="collectionInfo"
+          :icon-only="$vuetify.breakpoint.smAndDown"
+        />
+      </v-app-bar>
+    </portal>
     <v-container>
       <skeleton-item-grid v-if="loading" :view-type="viewType" />
       <item-grid :loading="loading" :items="items">
@@ -71,6 +80,7 @@ export default Vue.extend({
   },
   data() {
     return {
+      isPageActive: false,
       items: [] as BaseItemDto[],
       itemsCount: 0,
       loading: false,
@@ -138,6 +148,7 @@ export default Vue.extend({
     }
   },
   async activated() {
+    this.isPageActive = true;
     this.setAppBarOpacity({ opaqueAppBar: true });
     this.$nextTick(() => {
       this.$nuxt.$loading.start();
@@ -178,6 +189,7 @@ export default Vue.extend({
     }
   },
   deactivated() {
+    this.isPageActive = false;
     this.setAppBarOpacity({ opaqueAppBar: false });
   },
   methods: {
