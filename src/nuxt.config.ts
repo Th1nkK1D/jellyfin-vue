@@ -91,10 +91,11 @@ const config: NuxtConfig = {
     'plugins/nativeWebsocketPlugin.ts',
     // Components
     { src: 'plugins/components/swiper.ts', mode: 'client' },
-    'plugins/components/vueVirtualScroller.ts',
     'plugins/components/veeValidate.ts',
-    { src: 'plugins/components/vueFullscreen.ts', mode: 'client' },
     'plugins/components/vueDraggable.ts',
+    { src: 'plugins/components/vueFullscreen.ts', mode: 'client' },
+    'plugins/components/vuePortal.ts',
+    'plugins/components/vueVirtualScroller.ts',
     // Utility
     'plugins/browserDetectionPlugin.ts',
     { src: 'plugins/playbackProfilePlugin.ts', mode: 'client' },
